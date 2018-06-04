@@ -91,7 +91,7 @@ To see that the pod has started properly, you can check the logs with `kubectl l
 
 ## 2. service.yml
 
-a. Like the `deployment`, the `service` needs a name and a label. The name is important here, as it will be used to link it with the ingress controller in the next step.
+a. Like the `deployment`, the `service` needs a name and a label. The name is important here, as it will be used to link it with the ingress in the next step.
 
 ```yaml
 metadata:
