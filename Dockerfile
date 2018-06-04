@@ -1,15 +1,13 @@
-FROM node:7.7.4
+FROM node:9
 
 RUN mkdir -p /app
 
 WORKDIR /app
 
-COPY package.json /app
-
-RUN npm install
-
 COPY . /app
+
+RUN yarn install
 
 EXPOSE 3000
 
-ENTRYPOINT ["npm", "start"]
+ENTRYPOINT ["yarn", "start"]
