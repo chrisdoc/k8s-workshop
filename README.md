@@ -32,7 +32,7 @@ TBD!!
 
 ---
 
-# Prep local Kubernetes cluster for deployment
+# Prep local environment
 ## minikube
 minikube is an implementation of a local Kubernetes cluster, that can be used when testing manifests, deployments and so on.
 * Run `minikube start` to get the cluster running
@@ -42,14 +42,11 @@ minikube is an implementation of a local Kubernetes cluster, that can be used wh
 
 ---
 # Workshop Exercises
+The first thing to do is to write manifests for the Kubernetes manifest is a description of a _desired state_ of a resource. Three different resource types are going to be needed for this workshop, `deployment`, `service` and `ingress`.
 
-## 1. Writing manifests
-Kubernetes manifest is a description of a _desired state_ of a resource. Three different resource types are going to be needed for this workshop, `deployment`, `service` and `ingress`.
-
-### k8s deployment
 Templates for the manifests can be located under the `deploy/` folder.
 
-#### deployment.yml
+### 1. deployment.yml
 
 a. Give the `deployment` resource a name. This can then be used to later access the resource, to update or delete it for example.
 
