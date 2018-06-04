@@ -39,6 +39,7 @@ minikube is an implementation of a local Kubernetes cluster, that can be used wh
 * `kubectl` now has configuration pointing to this local cluster, for this terminal session
 * Try running `kubectl get cluster-info`
 * Double check what cluster you are pointing at if you use an another terminal session
+* Enable the ingress controller, so we can test creating ingresses, by running `minikube addons enable ingress`
 
 ---
 # Workshop Exercises
@@ -73,7 +74,7 @@ spec:
     spec:
       containers:
         - name: lauriku-app
-          inage: lauriku/k8s-workshop:latest
+          image: lauriku/k8s-workshop:latest
           ports:
             - containerPort: 3000
 ```
@@ -85,6 +86,8 @@ kubectl apply -f deploy/deployment.yml
 ```
 
 You should be able to see the pods starting by writing `kubectl get pods`.
+
+To see that the pod has started properly, you can check the logs with `kubectl logs <pod-name>`
 
 ## 2. service.yml
 
@@ -111,8 +114,9 @@ c. Lastly, the `service` needs a `selector`, to know which pods to direct traffi
 
 ```yaml
 spec:
-  selector:
-    app: lauriku-app
+  ...
+    selector:
+      app: lauriku-app
 ```
 
 The service manifest can be applied the same way as the deployment, so
@@ -150,11 +154,11 @@ Here we just route all traffic to port 3000 of the `lauriku-svc` service.
 Finally, apply this manifest with `kubectl apply -f deploy/ingress.yml`. It can then be inspected by `kubectl get ingress lauriku-svc -o yaml`.
 
 ### Setting up connectivity
-In order to get the correct ip address and port the deployment from the `docker-machine` that is running `minikube`, run the following snippet, and it should open up a browser pointing to the ingress controller created in the previous step. Replace `lauriku-svc` with the name of your service.
+In order to get the correct ip address and port the deployment from the `docker-machine` that is running `minikube`, run the following snippet, and it should open up a browser pointing to the ingress controller created in the previous step. Replace `lauriku-svc` with the name of your service
 
 ```bash
 ENDPOINT_HOST=$(minikube ip)
-ENDPOINT_PORT=$(kubectl get svc lauriku-svc -o 'jsonpath={.spec.ports[0].nodePort}')
+ENDPOINT_PORT=$(kubectl get svc lauriku-svc -o 'jsonpath={.spec.ports[0].servicePort}')
 ENDPOINT=$ENDPOINT_HOST:$ENDPOINT_PORT
 open $ENDPOINT
 ```
