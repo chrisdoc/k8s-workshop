@@ -154,10 +154,29 @@ Here we just route all traffic to port 3000 of the `lauriku-svc` service.
 Finally, apply this manifest with `kubectl apply -f deploy/ingress.yml`. It can then be inspected by `kubectl get ingress lauriku-svc -o yaml`.
 
 ### Setting up connectivity
-In order to get the correct ip address and port the deployment from the `docker-machine` that is running `minikube`, run the following snippet, and it should open up a browser pointing to the ingress controller created in the previous step. Replace `lauriku-svc` with the name of your service
+In order to get the correct ip address and port the deployment from the `docker-machine` that is running `minikube`, run the following snippet, and it should open up a browser pointing to the ingress created in the previous step.
 
 ```bash
 ENDPOINT_HOST=$(minikube ip)
 open $ENDPOINT_HOST
 ```
+
+## Scaling the deployment
+There are a few ways to do the scaling, the quickest being the `kubectl scale` command.
+
+Try the following:
+
+```bash
+kubectl scale --replicas=4 deployment/lauriku-app && \
+kubectl rollout status deployment/lauriku-app
+```
+
+This controls the `deployment` object in Kubernetes directly, but of course if there's a new `kubectl apply` from the repo, the changes would be overwritten. The `deployment.yml` can be updated with:
+
+```yaml
+spec:
+  replicas: 4
+```
+
+And then applied with `kubectl apply -f deploy/deployment.yml`.
 
