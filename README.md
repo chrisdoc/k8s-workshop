@@ -46,7 +46,7 @@ The first thing to do is to write manifests for the Kubernetes manifest is a des
 
 Templates for the manifests can be located under the `deploy/` folder.
 
-### 1. deployment.yml
+## 1. deployment.yml
 
 a. Give the `deployment` resource a name. This can then be used to later access the resource, to update or delete it for example.
 
@@ -84,12 +84,57 @@ Now, you should be able to send this manifest to the Kubernetes API, so that it 
 kubectl apply -f deploy/deployment.yml
 ```
 
-You should be able to see the pods starting by writing `kubectl get pods`
+You should be able to see the pods starting by writing `kubectl get pods`.
+
+## 2. service.yml
+
+a. Like the `deployment`, the `service` needs a name and a label. The name is important here, as it will be used to link it with the ingress controller in the next step.
+
+```yaml
+metadata:
+  name: lauriku-svc
+  labels:
+    app: lauriku-app
+```
+
+b. The `spec` of the `service` needs definitions on what port to map to which container, and what protocol to use. `targetPort` is the port that is exposed by the container, and where the service will direct traffic to. `port` can be any port, but for simplicity we'll use the same here.
+
+```yaml
+spec:
+  ports:
+    - port: 3000
+      targetPort: 3000
+      protocol: TCP
+```
+
+c. Lastly, the `service` needs a `selector`, to know which pods to direct traffic to.
+
+```yaml
+spec:
+  selector:
+    app: lauriku-app
+```
+
+The service manifest can be applied the same way as the deployment, so
+
+```bash
+kubectl apply -f deploy/service.yml
+```
+
+And `kubectl get service -o yaml` should now show detailed information of it.
+
+## 3. ingress.yml
+
+a.
+b.
+c.
 
 ### Setting up connectivity
+In order to get the correct ip address and port the deployment from 
+
 ```bash
 ENDPOINT_HOST=$(minikube ip)
-ENDPOINT_PORT=$(kubectl get svc k8s-workshop -o 'jsonpath={.spec.ports[0].nodePort}')
+ENDPOINT_PORT=$(kubectl get svc <your-service-name> -o 'jsonpath={.spec.ports[0].nodePort}')
 ENDPOINT=$ENDPOINT_HOST:$ENDPOINT_PORT
 ```
 
