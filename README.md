@@ -158,8 +158,6 @@ In order to get the correct ip address and port the deployment from the `docker-
 
 ```bash
 ENDPOINT_HOST=$(minikube ip)
-ENDPOINT_PORT=$(kubectl get svc lauriku-svc -o 'jsonpath={.spec.ports[0].servicePort}')
-ENDPOINT=$ENDPOINT_HOST:$ENDPOINT_PORT
-open $ENDPOINT
+open $ENDPOINT_HOST
 ```
 
