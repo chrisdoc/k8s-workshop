@@ -125,16 +125,37 @@ And `kubectl get service -o yaml` should now show detailed information of it.
 
 ## 3. ingress.yml
 
-a.
-b.
-c.
+a. You know the drill, the `ingress` controller needs some identifying information, so let's go:
+
+```yaml
+metadata:
+  name: lauriku-ing
+```
+
+b. Then the `spec`. For the `ingress`, this is a set of rules that determine what services traffic is routed to, based on routes for example.
+
+```yaml
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /.*
+        backend:
+          serviceName: lauriku-svc
+          servicePort: 3000
+```
+
+Here we just route all traffic to port 3000 of the `lauriku-svc` service.
+
+Finally, apply this manifest with `kubectl apply -f deploy/ingress.yml`. It can then be inspected by `kubectl get ingress lauriku-svc -o yaml`.
 
 ### Setting up connectivity
-In order to get the correct ip address and port the deployment from 
+In order to get the correct ip address and port the deployment from the `docker-machine` that is running `minikube`, run the following snippet, and it should open up a browser pointing to the ingress controller created in the previous step. Replace `lauriku-svc` with the name of your service.
 
 ```bash
 ENDPOINT_HOST=$(minikube ip)
-ENDPOINT_PORT=$(kubectl get svc <your-service-name> -o 'jsonpath={.spec.ports[0].nodePort}')
+ENDPOINT_PORT=$(kubectl get svc lauriku-svc -o 'jsonpath={.spec.ports[0].nodePort}')
 ENDPOINT=$ENDPOINT_HOST:$ENDPOINT_PORT
+open $ENDPOINT
 ```
 
