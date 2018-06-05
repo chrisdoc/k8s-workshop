@@ -23,8 +23,7 @@ Make sure you have `docker`, `minikube` and `kubectl` installed.
 * `docker run -it --rm -p 3000:3000 <username>/k8s-workshop``
 * Browse [localhost:3000](http://localhost:3000)
 
-## Creating a docker hub account
-TBD!!
+## (For extra credit!) Creating a docker hub account
 
 * Create a docker hub account
 * Create an automated build
@@ -35,6 +34,7 @@ TBD!!
 # Prep local environment
 ## minikube
 minikube is an implementation of a local Kubernetes cluster, that can be used when testing manifests, deployments and so on.
+* BE WARNED: minikube actually overwrites your existing kubeconfig, so take a backup of your `~/.kube/config` if you wish to preserve it.
 * Run `minikube start` to get the cluster running
 * `kubectl` now has configuration pointing to this local cluster, for this terminal session
 * Try running `kubectl get cluster-info`
@@ -160,8 +160,9 @@ In order to get the correct ip address and port the deployment from the `docker-
 ENDPOINT_HOST=$(minikube ip)
 open $ENDPOINT_HOST
 ```
+---
 
-## Scaling the deployment
+## 4. Scaling the deployment
 There are a few ways to do the scaling, the quickest being the `kubectl scale` command.
 
 Try the following:
@@ -179,4 +180,33 @@ spec:
 ```
 
 And then applied with `kubectl apply -f deploy/deployment.yml`.
+
+### Kubernetes dashboard
+You can browse your resources from the Kubernetes dashboard as well, just run `minikube dashboard`.
+
+## 5. Upgrading the deployment
+Once we have an existing image, an upgrade can be performed by just editing the existing deployment. This can be done with the `kubectl set image` command.
+
+But first, adjust the update policy for the deployment a bit. Add the following to the deployment manifest:
+
+```yaml
+spec:
+  strategy:
+      type: RollingUpdate
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+```
+
+And then apply the policy with `kubectl apply -f deploy/deployment.yml`.
+
+EXTRA CREDIT: Configure your Docker Hub automated builds to tag images based on git tags. Then, do a change to `index.js`, tag it, and wait for an image to build, and use the tag with the upgrade in the next step.
+
+Then, you can fire up the RollingUpdate by setting the image of the deployment to the new one:
+
+```bash
+kubectl set image 
+
+
+
 
