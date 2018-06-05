@@ -1,3 +1,24 @@
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
+metadata:
+  name: chrisdoc-app
+spec:
+  replicas: 4
+  template:
+    metadata:
+      labels:
+        app: chrisdoc-app
+    spec:
+      containers:
+        - name: chrisdoc-app
+          image: chriskies/k8s-workshop:latest
+          ports:
+            - containerPort: 3000
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "50m"
+            limits:
+              memory: "256Mi"
+              cpu: "100m"
