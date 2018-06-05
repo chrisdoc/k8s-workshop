@@ -40,6 +40,7 @@ minikube is an implementation of a local Kubernetes cluster, that can be used wh
 * Try running `kubectl get cluster-info`
 * Double check what cluster you are pointing at if you use an another terminal session
 * Enable the ingress controller, so we can test creating ingresses, by running `minikube addons enable ingress`
+* Enable metrics collection by running `minikube addons enable heapster`
 
 ---
 # Workshop Exercises
@@ -205,8 +206,33 @@ EXTRA CREDIT: Configure your Docker Hub automated builds to tag images based on 
 Then, you can fire up the RollingUpdate by setting the image of the deployment to the new one:
 
 ```bash
-kubectl set image 
+kubectl set image deployment/lauriku-app lauriku-app=lauriku/k8s-workshop:v2 && \
+kubectl rollout status deployment/lauriku-app
+```
 
+## 6. Rolling back the deployment
+Oopsie, you made a mistake. How do you roll back the deployment?
 
+You can check the history of a deployment by `kubectl rollout history deployment/lauriku-app`, and inspect each revision with the `--revision` flag, so for example:
 
+```bash
+$ kubectl rollout history deployment/lauriku-app --revision=1
+deployments "lauriku-app" with revision #1
+Pod Template:
+  Labels:	app=lauriku-app
+	pod-template-hash=3495417412
+  Containers:
+   lauriku-app:
+    Image:	lauriku/k8s-workshop:latest
+    Port:	3000/TCP
+    Host Port:	0/TCP
+    Environment:	<none>
+    Mounts:	<none>
+  Volumes:	<none>
+```
 
+Looking here, we can see that _revision #1_ has the previous version of the image. So the rollback to this version could be done with: `kubectl rollout undo deployment/lauriku-app --to-revision=2`. Just saying `rollout undo deployment/<deployment_name>` without `--to-revision`, will perform a rollback to the previous version.
+
+## 7. Resource requests and limits
+
+## 8. Horizontal Pod Autoscaling
